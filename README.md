@@ -1,10 +1,6 @@
 # 📚 Library Management System
 
-[![CI Pipeline](https://github.com/your-username/library-management-system/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/your-username/library-management-system/actions/workflows/ci-pipeline.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=your-project-key&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=your-project-key)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=your-project-key&metric=coverage)](https://sonarcloud.io/summary/new_code?id=your-project-key)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=your-project-key&metric=bugs)](https://sonarcloud.io/summary/new_code?id=your-project-key)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=your-project-key&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=your-project-key)
+[![CI Pipeline](https://github.com/Seecherr/ref_Project_T/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/Seecherr/ref_Project_T/actions/workflows/ci-pipeline.yml)
 
 An in-memory Library Management System built with Python, implementing SOLID principles and GoF design patterns (Strategy, Observer). Features comprehensive test coverage (200+ tests) and CI/CD integration with SonarCloud.
 
