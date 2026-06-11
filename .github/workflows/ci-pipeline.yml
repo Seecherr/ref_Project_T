@@ -29,17 +29,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests with coverage
+      - name: Run tests
+        shell: pwsh
         run: |
-          mkdir -p reports
-          pytest \
-            --cov=src \
-            --cov-report=xml:coverage.xml \
-            --cov-report=html:htmlcov \
-            --cov-report=term-missing \
-            --cov-fail-under=70 \
-            --junitxml=reports/junit.xml \
-            -v
+          mkdir reports
+
+          pytest `
+            --cov=src `
+            --cov-report=xml:coverage.xml `
+            --cov-report=html:htmlcov `
+            --cov-report=term-missing `
+            --cov-fail-under=70 `
+            --junitxml=reports/junit.xml
 
       - name: Upload test reports
         if: always()
