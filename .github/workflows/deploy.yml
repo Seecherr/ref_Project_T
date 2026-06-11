@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Stop existing container
+        run: |
+          docker stop library-app 2>$null
+          docker rm library-app 2>$null
+        continue-on-error: true
+
+      - name: Build Docker image
+        run: docker build -t library-management-system:latest .
+
+      - name: Run application container
+        run: |
+          docker run -d `
+            --name library-app `
+            --restart unless-stopped `
+            library-management-system:latest
+
+      - name: Verify deployment
+        run: |
+          Start-Sleep -Seconds 3
+          $status = docker inspect -f '{{.State.Status}}' library-app
+          if ($status -eq 'running') {
+            Write-Host "✅ Deployment successful — container is running"
+            docker logs library-app
+          } else {
+            Write-Host "❌ Deployment failed — container status: $status"
+            exit 1
+          }
