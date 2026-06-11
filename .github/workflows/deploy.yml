@@ -26,16 +26,24 @@ jobs:
           docker run -d `
             --name library-app `
             --restart unless-stopped `
+            -p 8000:8000 `
             library-management-system:latest
 
       - name: Verify deployment
         run: |
-          Start-Sleep -Seconds 3
-          $status = docker inspect -f '{{.State.Status}}' library-app
-          if ($status -eq 'running') {
-            Write-Host "✅ Deployment successful — container is running"
+          Start-Sleep -Seconds 5
+          try {
+            $response = Invoke-RestMethod -Uri "http://localhost:8000/api/health" -Method Get
+            if ($response.status -eq 'ok') {
+              Write-Host "✅ Deployment successful — API is responding"
+              Write-Host "   Health check: $($response | ConvertTo-Json)"
+            } else {
+              Write-Host "❌ Deployment failed — unexpected health response"
+              docker logs library-app
+              exit 1
+            }
+          } catch {
+            Write-Host "❌ Deployment failed — API not responding"
             docker logs library-app
-          } else {
-            Write-Host "❌ Deployment failed — container status: $status"
             exit 1
           }

@@ -7,7 +7,7 @@ name = "library-management-system"
 version = "1.0.0"
 description = "In-memory Library Management System with Strategy and Observer patterns"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["flask>=3.0"]
 
 [project.optional-dependencies]
 dev = [
