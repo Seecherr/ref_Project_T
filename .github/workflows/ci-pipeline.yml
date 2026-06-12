@@ -33,7 +33,8 @@ jobs:
         run: mypy src/ --ignore-missing-imports
 
       - name: Bandit security scan
-        run: bandit -r src/ app.py main.py -c pyproject.toml -f txt || true
+        run: bandit -r src/ app.py main.py -c pyproject.toml -f txt
+        continue-on-error: true
 
   build-and-test:
     needs: lint-and-static-analysis
