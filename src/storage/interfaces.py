@@ -8,7 +8,6 @@ interfaces, enabling the Dependency Inversion Principle (DIP).
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from src.models.book import Book, BookItem
 from src.models.fine import Fine
@@ -27,7 +26,7 @@ class BookRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_isbn(self, isbn: str) -> Optional[Book]:
+    def get_by_isbn(self, isbn: str) -> Book | None:
         """Get a book by its ISBN."""
         ...  # pragma: no cover
 
@@ -61,7 +60,7 @@ class BookItemRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_barcode(self, barcode: str) -> Optional[BookItem]:
+    def get_by_barcode(self, barcode: str) -> BookItem | None:
         """Get a book item by its barcode."""
         ...  # pragma: no cover
 
@@ -100,12 +99,12 @@ class MemberRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_id(self, member_id: str) -> Optional[Member]:
+    def get_by_id(self, member_id: str) -> Member | None:
         """Get a member by ID."""
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_email(self, email: str) -> Optional[Member]:
+    def get_by_email(self, email: str) -> Member | None:
         """Get a member by email."""
         ...  # pragma: no cover
 
@@ -134,7 +133,7 @@ class LoanRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_id(self, loan_id: str) -> Optional[Loan]:
+    def get_by_id(self, loan_id: str) -> Loan | None:
         """Get a loan by ID."""
         ...  # pragma: no cover
 
@@ -149,7 +148,7 @@ class LoanRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_active_by_book_item(self, barcode: str) -> Optional[Loan]:
+    def get_active_by_book_item(self, barcode: str) -> Loan | None:
         """Get the active loan for a specific book item, if any."""
         ...  # pragma: no cover
 
@@ -173,7 +172,7 @@ class FineRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_id(self, fine_id: str) -> Optional[Fine]:
+    def get_by_id(self, fine_id: str) -> Fine | None:
         """Get a fine by ID."""
         ...  # pragma: no cover
 
@@ -183,7 +182,7 @@ class FineRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_loan(self, loan_id: str) -> Optional[Fine]:
+    def get_by_loan(self, loan_id: str) -> Fine | None:
         """Get the fine associated with a specific loan."""
         ...  # pragma: no cover
 
@@ -207,7 +206,7 @@ class ReservationRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_id(self, reservation_id: str) -> Optional[Reservation]:
+    def get_by_id(self, reservation_id: str) -> Reservation | None:
         """Get a reservation by ID."""
         ...  # pragma: no cover
 
@@ -251,7 +250,7 @@ class NotificationRepository(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def get_by_id(self, notification_id: str) -> Optional[Notification]:
+    def get_by_id(self, notification_id: str) -> Notification | None:
         """Get a notification by ID."""
         ...  # pragma: no cover
 

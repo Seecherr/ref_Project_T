@@ -1,9 +1,6 @@
 """Unit tests for InMemoryMemberRepository."""
 
-import pytest
-
-from src.models.member import Reader, Librarian, MemberStatus
-from src.storage.in_memory_member_repository import InMemoryMemberRepository
+from src.models.member import Librarian, Reader
 
 
 class TestInMemoryMemberRepository:

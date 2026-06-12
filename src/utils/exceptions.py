@@ -46,9 +46,7 @@ class LoanLimitExceededError(LibraryError):
     """Raised when a member tries to borrow more than their limit."""
 
     def __init__(self, member_id: str, limit: int) -> None:
-        super().__init__(
-            f"Loan limit ({limit}) exceeded for member: {member_id}"
-        )
+        super().__init__(f"Loan limit ({limit}) exceeded for member: {member_id}")
         self.member_id = member_id
         self.limit = limit
 

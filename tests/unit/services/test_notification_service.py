@@ -1,11 +1,7 @@
 """Unit tests for NotificationService and BookAvailabilityListener."""
 
-import pytest
-from typing import Any
-
-from src.models.notification import Notification
-from src.services.notification_service import NotificationService, BookAvailabilityListener
 from src.models.reservation import Reservation
+from src.services.notification_service import BookAvailabilityListener
 from src.utils.event_manager import Event, EventManager
 
 
@@ -44,7 +40,7 @@ class TestNotificationService:
 
     def test_get_unread_notifications(self, notification_service):
         n1 = notification_service.send_notification("M1", "A")
-        n2 = notification_service.send_notification("M1", "B")
+        notification_service.send_notification("M1", "B")
         notification_service.mark_as_read(n1.notification_id)
         unread = notification_service.get_unread_notifications("M1")
         assert len(unread) == 1
@@ -68,6 +64,7 @@ class TestBookAvailabilityListener:
 
     def test_book_returned_event(self, notification_service):
         from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
+
         reservation_repo = InMemoryReservationRepository()
         reservation_repo.add(Reservation(reservation_id="R1", member_id="M1", book_isbn="978-1"))
 
@@ -104,6 +101,7 @@ class TestBookAvailabilityListener:
 
     def test_book_returned_no_reservations(self, notification_service):
         from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
+
         reservation_repo = InMemoryReservationRepository()
         listener = BookAvailabilityListener(notification_service, reservation_repo)
         listener.update(Event.BOOK_RETURNED, {"isbn": "978-1"})

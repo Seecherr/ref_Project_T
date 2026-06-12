@@ -1,9 +1,6 @@
 """Unit tests for Notification model."""
 
-import pytest
 from datetime import datetime
-
-from src.models.notification import Notification
 
 
 class TestNotification:

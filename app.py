@@ -11,10 +11,10 @@ from flask import Flask, jsonify, render_template, request
 
 from main import create_application, seed_data
 
-
 # ---------------------------------------------------------------------------
 # Serialization helpers
 # ---------------------------------------------------------------------------
+
 
 def serialize_date(d):
     """Convert date/datetime to ISO string, or None."""
@@ -124,6 +124,7 @@ def serialize_fine(fine):
 # Application factory
 # ---------------------------------------------------------------------------
 
+
 def create_flask_app():
     """Create and configure the Flask application."""
     flask_app = Flask(__name__)
@@ -156,10 +157,7 @@ def create_flask_app():
     @flask_app.route("/api/books", methods=["GET"])
     def list_books():
         query = request.args.get("q", "").strip()
-        if query:
-            books = catalog.search_books(query)
-        else:
-            books = catalog.get_all_books()
+        books = catalog.search_books(query) if query else catalog.get_all_books()
         return jsonify([serialize_book(b) for b in books])
 
     @flask_app.route("/api/books/<isbn>", methods=["GET"])
@@ -243,7 +241,7 @@ def create_flask_app():
     @flask_app.route("/api/loans", methods=["GET"])
     def list_loans():
         all_loans = loans.get_all_loans()
-        return jsonify([serialize_loan(l) for l in all_loans])
+        return jsonify([serialize_loan(loan_item) for loan_item in all_loans])
 
     @flask_app.route("/api/loans", methods=["POST"])
     def borrow_book():
@@ -311,11 +309,13 @@ def create_flask_app():
     def get_member_fines(member_id):
         unpaid = fines.get_unpaid_fines(member_id)
         total = fines.get_total_unpaid(member_id)
-        return jsonify({
-            "member_id": member_id,
-            "total_unpaid": str(total),
-            "fines": [serialize_fine(f) for f in unpaid],
-        })
+        return jsonify(
+            {
+                "member_id": member_id,
+                "total_unpaid": str(total),
+                "fines": [serialize_fine(f) for f in unpaid],
+            }
+        )
 
     @flask_app.route("/api/fines/<fine_id>/pay", methods=["POST"])
     def pay_fine(fine_id):

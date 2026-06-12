@@ -1,11 +1,12 @@
 """Unit tests for ReservationService."""
 
-import pytest
 from datetime import datetime, timedelta
 
-from src.models.member import Reader, MemberStatus
+import pytest
+
+from src.models.member import MemberStatus, Reader
 from src.models.reservation import Reservation, ReservationStatus
-from src.utils.exceptions import MemberNotFoundError, MemberBlockedError, ReservationError
+from src.utils.exceptions import MemberBlockedError, MemberNotFoundError, ReservationError
 
 
 class TestReservationServicePlace:
@@ -75,7 +76,7 @@ class TestReservationServiceFulfill:
         member_repo.add(Reader(member_id="R001", name="John", email="j@t.com"))
         member_repo.add(Reader(member_id="R002", name="Jane", email="ja@t.com"))
         r1 = reservation_service.place_reservation("R001", "978-1")
-        r2 = reservation_service.place_reservation("R002", "978-1")
+        reservation_service.place_reservation("R002", "978-1")
         fulfilled = reservation_service.fulfill_next_reservation("978-1")
         assert fulfilled.reservation_id == r1.reservation_id
         assert fulfilled.status == ReservationStatus.FULFILLED

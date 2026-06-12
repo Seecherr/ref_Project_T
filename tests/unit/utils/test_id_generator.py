@@ -1,7 +1,5 @@
 """Unit tests for ID generator."""
 
-import pytest
-
 from src.utils.id_generator import generate_id
 
 

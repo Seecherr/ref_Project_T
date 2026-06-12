@@ -1,10 +1,8 @@
 """Unit tests for InMemoryReservationRepository."""
 
-import pytest
 from datetime import datetime, timedelta
 
 from src.models.reservation import Reservation, ReservationStatus
-from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
 
 
 class TestInMemoryReservationRepository:

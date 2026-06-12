@@ -1,19 +1,16 @@
 """Integration tests for reservation → notification flow."""
 
-import pytest
-from datetime import datetime, timedelta
-
-from src.models.book import Book, BookItem
+from src.models.book import BookItem
 from src.models.member import Reader
 from src.services.catalog_service import CatalogService
 from src.services.loan_service import LoanService
+from src.services.notification_service import BookAvailabilityListener, NotificationService
 from src.services.reservation_service import ReservationService
-from src.services.notification_service import NotificationService, BookAvailabilityListener
-from src.storage.in_memory_book_repository import InMemoryBookRepository, InMemoryBookItemRepository
-from src.storage.in_memory_member_repository import InMemoryMemberRepository
+from src.storage.in_memory_book_repository import InMemoryBookItemRepository, InMemoryBookRepository
 from src.storage.in_memory_loan_repository import InMemoryLoanRepository
-from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
+from src.storage.in_memory_member_repository import InMemoryMemberRepository
 from src.storage.in_memory_notification_repository import InMemoryNotificationRepository
+from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
 from src.utils.event_manager import Event, EventManager
 
 
@@ -41,7 +38,7 @@ class TestReservationFlow:
         return catalog_service, loan_service, reservation_service, notification_service, member_repo, book_item_repo
 
     def test_reserve_then_return_notifies(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         member_repo.add(Reader(member_id="R2", name="Jane", email="ja@t.com"))
@@ -61,18 +58,18 @@ class TestReservationFlow:
         assert "978-1" in member_notifications[0].message
 
     def test_fulfill_reservation_notifies(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, _loans, reservations, notifications, member_repo, _book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         reservations.place_reservation("R1", "978-1")
-        fulfilled = reservations.fulfill_next_reservation("978-1")
+        reservations.fulfill_next_reservation("978-1")
 
         member_notifications = notifications.get_notifications("R1")
         assert len(member_notifications) == 1
         assert "fulfilled" in member_notifications[0].message.lower()
 
     def test_multiple_reservations_fifo(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, _loans, reservations, _notifications, member_repo, _book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="Alice", email="a@t.com"))
         member_repo.add(Reader(member_id="R2", name="Bob", email="b@t.com"))
@@ -91,13 +88,13 @@ class TestReservationFlow:
         assert fulfilled.member_id == "R2"
 
     def test_cancel_reservation_not_fulfilled(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, _loans, reservations, _notifications, member_repo, _book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         member_repo.add(Reader(member_id="R2", name="Jane", email="ja@t.com"))
 
         r1 = reservations.place_reservation("R1", "978-1")
-        r2 = reservations.place_reservation("R2", "978-1")
+        reservations.place_reservation("R2", "978-1")
 
         # Cancel R1's reservation
         reservations.cancel_reservation(r1.reservation_id)
@@ -107,7 +104,7 @@ class TestReservationFlow:
         assert fulfilled.member_id == "R2"
 
     def test_return_with_no_reservations(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, loans, _reservations, notifications, member_repo, book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         book_item_repo.add(BookItem(barcode="BC1", book_isbn="978-1"))
@@ -119,7 +116,7 @@ class TestReservationFlow:
         assert len(notifications.get_all_notifications()) == 0
 
     def test_full_cycle_reserve_return_fulfill(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         member_repo.add(Reader(member_id="R2", name="Jane", email="ja@t.com"))
@@ -141,7 +138,7 @@ class TestReservationFlow:
         assert len(member_notifications) == 2
 
     def test_reservation_after_cancel_allows_new_one(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, _loans, reservations, _notifications, member_repo, _book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         r = reservations.place_reservation("R1", "978-1")
@@ -150,7 +147,7 @@ class TestReservationFlow:
         assert r2.member_id == "R1"
 
     def test_multiple_books_reservations(self):
-        catalog, loans, reservations, notifications, member_repo, book_item_repo = self._setup_services()
+        _catalog, _loans, reservations, _notifications, member_repo, _book_item_repo = self._setup_services()
 
         member_repo.add(Reader(member_id="R1", name="John", email="j@t.com"))
         reservations.place_reservation("R1", "978-1")

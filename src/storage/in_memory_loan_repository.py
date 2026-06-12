@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from src.models.loan import Loan
 from src.storage.interfaces import LoanRepository
 
@@ -18,25 +16,19 @@ class InMemoryLoanRepository(LoanRepository):
         """Add a loan."""
         self._loans[loan.loan_id] = loan
 
-    def get_by_id(self, loan_id: str) -> Optional[Loan]:
+    def get_by_id(self, loan_id: str) -> Loan | None:
         """Get a loan by ID."""
         return self._loans.get(loan_id)
 
     def get_active_by_member(self, member_id: str) -> list[Loan]:
         """Get all active loans for a member."""
-        return [
-            loan for loan in self._loans.values()
-            if loan.member_id == member_id and loan.is_active()
-        ]
+        return [loan for loan in self._loans.values() if loan.member_id == member_id and loan.is_active()]
 
     def get_by_book_item(self, barcode: str) -> list[Loan]:
         """Get all loans for a specific book item."""
-        return [
-            loan for loan in self._loans.values()
-            if loan.book_item_barcode == barcode
-        ]
+        return [loan for loan in self._loans.values() if loan.book_item_barcode == barcode]
 
-    def get_active_by_book_item(self, barcode: str) -> Optional[Loan]:
+    def get_active_by_book_item(self, barcode: str) -> Loan | None:
         """Get the active loan for a specific book item."""
         for loan in self._loans.values():
             if loan.book_item_barcode == barcode and loan.is_active():

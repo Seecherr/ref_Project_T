@@ -1,6 +1,5 @@
 """Unit tests for EventManager (Observer Pattern)."""
 
-import pytest
 from typing import Any
 
 from src.utils.event_manager import Event, EventListener, EventManager

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from src.models.member import Member
 from src.storage.interfaces import MemberRepository
 
@@ -21,11 +19,11 @@ class InMemoryMemberRepository(MemberRepository):
         """Add a member."""
         self._members[member.member_id] = member
 
-    def get_by_id(self, member_id: str) -> Optional[Member]:
+    def get_by_id(self, member_id: str) -> Member | None:
         """Get a member by ID."""
         return self._members.get(member_id)
 
-    def get_by_email(self, email: str) -> Optional[Member]:
+    def get_by_email(self, email: str) -> Member | None:
         """Get a member by email."""
         for member in self._members.values():
             if member.email == email:

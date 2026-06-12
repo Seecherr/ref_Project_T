@@ -1,9 +1,6 @@
 """Unit tests for InMemoryBookRepository and InMemoryBookItemRepository."""
 
-import pytest
-
 from src.models.book import Book, BookItem, BookStatus
-from src.storage.in_memory_book_repository import InMemoryBookRepository, InMemoryBookItemRepository
 
 
 class TestInMemoryBookRepository:

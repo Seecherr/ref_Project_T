@@ -6,14 +6,11 @@ and availability checks.
 
 from __future__ import annotations
 
-from typing import Optional
-
-from src.models.book import Book, BookItem, BookStatus
-from src.storage.interfaces import BookRepository, BookItemRepository
+from src.models.book import Book, BookItem
+from src.storage.interfaces import BookItemRepository, BookRepository
 from src.utils.exceptions import (
     BookNotFoundError,
     DuplicateError,
-    InvalidISBNError,
 )
 from src.utils.id_generator import generate_id
 from src.utils.validators import validate_isbn, validate_non_empty_string
@@ -78,7 +75,7 @@ class CatalogService:
     def add_book_item(
         self,
         isbn: str,
-        barcode: Optional[str] = None,
+        barcode: str | None = None,
         rack_number: str = "",
     ) -> BookItem:
         """Add a physical copy to an existing book.
@@ -169,10 +166,10 @@ class CatalogService:
     def update_book(
         self,
         isbn: str,
-        title: Optional[str] = None,
-        author: Optional[str] = None,
-        subject: Optional[str] = None,
-        year: Optional[int] = None,
+        title: str | None = None,
+        author: str | None = None,
+        subject: str | None = None,
+        year: int | None = None,
     ) -> Book:
         """Update a book's information.
 

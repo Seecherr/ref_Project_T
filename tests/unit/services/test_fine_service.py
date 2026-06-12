@@ -1,14 +1,15 @@
 """Unit tests for FineService."""
 
-import pytest
-from decimal import Decimal
 from datetime import date, timedelta
+from decimal import Decimal
 
-from src.models.loan import Loan
+import pytest
+
 from src.models.fine import Fine
-from src.models.member import Reader, MemberStatus
+from src.models.loan import Loan
+from src.models.member import MemberStatus, Reader
 from src.utils.exceptions import FineNotFoundError
-from src.utils.fine_strategy import StandardFineStrategy, ProgressiveFineStrategy, NoFineStrategy
+from src.utils.fine_strategy import NoFineStrategy, ProgressiveFineStrategy
 
 
 class TestFineServiceCalculate:
@@ -20,7 +21,9 @@ class TestFineServiceCalculate:
 
     def test_calculate_fine_overdue(self, fine_service):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=20),
             due_date=date.today() - timedelta(days=6),
             return_date=date.today(),
@@ -34,7 +37,9 @@ class TestFineServiceCalculate:
     def test_create_fine_overdue(self, fine_service, member_repo):
         member_repo.add(Reader(member_id="M1", name="John", email="j@t.com"))
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=20),
             due_date=date.today() - timedelta(days=6),
             return_date=date.today(),
@@ -46,7 +51,9 @@ class TestFineServiceCalculate:
     def test_create_fine_idempotent(self, fine_service, member_repo):
         member_repo.add(Reader(member_id="M1", name="John", email="j@t.com"))
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=20),
             due_date=date.today() - timedelta(days=6),
             return_date=date.today(),
@@ -58,7 +65,9 @@ class TestFineServiceCalculate:
     def test_set_strategy(self, fine_service):
         fine_service.set_strategy(NoFineStrategy())
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=20),
             due_date=date.today() - timedelta(days=6),
             return_date=date.today(),
@@ -68,7 +77,9 @@ class TestFineServiceCalculate:
     def test_set_progressive_strategy(self, fine_service):
         fine_service.set_strategy(ProgressiveFineStrategy())
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=20),
             due_date=date.today() - timedelta(days=6),
             return_date=date.today(),
@@ -100,7 +111,7 @@ class TestFineServicePayment:
     def test_pay_fine_negative(self, fine_service, fine_repo):
         fine = Fine(fine_id="F1", loan_id="L1", member_id="M1", amount=Decimal("5.00"))
         fine_repo.add(fine)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="negative"):
             fine_service.pay_fine("F1", Decimal("-1.00"))
 
 
@@ -145,7 +156,9 @@ class TestFineServiceAutoBlock:
         reader = Reader(member_id="M1", name="John", email="j@t.com")
         member_repo.add(reader)
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=80),
             due_date=date.today() - timedelta(days=66),
             return_date=date.today(),

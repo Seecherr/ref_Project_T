@@ -40,7 +40,7 @@ class StandardFineStrategy(FineCalculationStrategy):
     """Fixed daily rate fine strategy.
 
     Charges a constant rate per day overdue.
-    Example: $0.50 per day × 10 days = $5.00
+    Example: $0.50 per day x 10 days = $5.00
     """
 
     def __init__(self, daily_rate: Decimal = Decimal("0.50")) -> None:
@@ -52,7 +52,7 @@ class StandardFineStrategy(FineCalculationStrategy):
         self.daily_rate = daily_rate
 
     def calculate(self, days_overdue: int) -> Decimal:
-        """Calculate fine as days × daily_rate.
+        """Calculate fine as days x daily_rate.
 
         Args:
             days_overdue: Number of days past the due date.
@@ -70,9 +70,9 @@ class ProgressiveFineStrategy(FineCalculationStrategy):
 
     Rate increases based on how long the book is overdue:
     - Days 1-7:   base rate (e.g., $0.50/day)
-    - Days 8-14:  2× base rate (e.g., $1.00/day)
-    - Days 15-30: 4× base rate (e.g., $2.00/day)
-    - Days 31+:   8× base rate (e.g., $4.00/day)
+    - Days 8-14:  2x base rate (e.g., $1.00/day)
+    - Days 15-30: 4x base rate (e.g., $2.00/day)
+    - Days 31+:   8x base rate (e.g., $4.00/day)
     """
 
     def __init__(self, base_rate: Decimal = Decimal("0.50")) -> None:

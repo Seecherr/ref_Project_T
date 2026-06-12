@@ -1,10 +1,8 @@
 """Unit tests for InMemoryFineRepository."""
 
-import pytest
 from decimal import Decimal
 
 from src.models.fine import Fine
-from src.storage.in_memory_fine_repository import InMemoryFineRepository
 
 
 class TestInMemoryFineRepository:

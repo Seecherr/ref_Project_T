@@ -7,10 +7,8 @@ such as member status checks, loan limits, and overdue detection.
 from __future__ import annotations
 
 from datetime import date, timedelta
-from typing import Optional
 
-from src.models.book import BookItem, BookStatus
-from src.models.loan import Loan, DEFAULT_LOAN_PERIOD_DAYS
+from src.models.loan import DEFAULT_LOAN_PERIOD_DAYS, Loan
 from src.models.member import Reader
 from src.storage.interfaces import (
     BookItemRepository,
@@ -41,7 +39,7 @@ class LoanService:
         loan_repo: LoanRepository,
         book_item_repo: BookItemRepository,
         member_repo: MemberRepository,
-        event_manager: Optional[EventManager] = None,
+        event_manager: EventManager | None = None,
     ) -> None:
         """Initialize with repository and event manager dependencies.
 
@@ -92,9 +90,8 @@ class LoanService:
             raise MemberBlockedError(member_id)
 
         # Check loan limit for readers
-        if isinstance(member, Reader):
-            if not member.can_borrow():
-                raise LoanLimitExceededError(member_id, member.max_books_limit)
+        if isinstance(member, Reader) and not member.can_borrow():
+            raise LoanLimitExceededError(member_id, member.max_books_limit)
 
         # Validate book item
         book_item = self._book_item_repo.get_by_barcode(barcode)
@@ -133,7 +130,7 @@ class LoanService:
     def return_book(
         self,
         barcode: str,
-        return_date: Optional[date] = None,
+        return_date: date | None = None,
     ) -> Loan:
         """Return a borrowed book item.
 
@@ -222,7 +219,7 @@ class LoanService:
         """
         return self._loan_repo.get_all()
 
-    def get_overdue_loans(self, as_of: Optional[date] = None) -> list[Loan]:
+    def get_overdue_loans(self, as_of: date | None = None) -> list[Loan]:
         """Get all currently overdue loans.
 
         Args:
@@ -232,10 +229,7 @@ class LoanService:
             List of overdue active loans.
         """
         check_date = as_of or date.today()
-        return [
-            loan for loan in self._loan_repo.get_all()
-            if loan.is_active() and loan.is_overdue(check_date)
-        ]
+        return [loan for loan in self._loan_repo.get_all() if loan.is_active() and loan.is_overdue(check_date)]
 
     def get_loan_history_by_member(self, member_id: str) -> list[Loan]:
         """Get all loans (active and completed) for a member.
@@ -246,7 +240,4 @@ class LoanService:
         Returns:
             List of all loans for the member.
         """
-        return [
-            loan for loan in self._loan_repo.get_all()
-            if loan.member_id == member_id
-        ]
+        return [loan for loan in self._loan_repo.get_all() if loan.member_id == member_id]

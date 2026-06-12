@@ -1,11 +1,12 @@
 """Unit tests for LoanService."""
 
-import pytest
 from datetime import date, timedelta
 
+import pytest
+
 from src.models.book import BookItem, BookStatus
-from src.models.member import Reader, MemberStatus
 from src.models.loan import Loan
+from src.models.member import MemberStatus, Reader
 from src.utils.exceptions import (
     BookNotAvailableError,
     BookNotFoundError,
@@ -154,7 +155,9 @@ class TestLoanServiceQueries:
 
     def test_get_overdue_loans(self, loan_service, loan_repo):
         overdue = Loan(
-            loan_id="L1", member_id="R001", book_item_barcode="BC001",
+            loan_id="L1",
+            member_id="R001",
+            book_item_barcode="BC001",
             issue_date=date.today() - timedelta(days=30),
             due_date=date.today() - timedelta(days=16),
         )

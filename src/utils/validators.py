@@ -2,7 +2,6 @@
 
 import re
 from datetime import date
-from typing import Optional
 
 from src.utils.exceptions import InvalidISBNError
 

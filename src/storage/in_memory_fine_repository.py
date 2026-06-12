@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from src.models.fine import Fine
 from src.storage.interfaces import FineRepository
 
@@ -18,18 +16,15 @@ class InMemoryFineRepository(FineRepository):
         """Add a fine."""
         self._fines[fine.fine_id] = fine
 
-    def get_by_id(self, fine_id: str) -> Optional[Fine]:
+    def get_by_id(self, fine_id: str) -> Fine | None:
         """Get a fine by ID."""
         return self._fines.get(fine_id)
 
     def get_unpaid_by_member(self, member_id: str) -> list[Fine]:
         """Get all unpaid fines for a member."""
-        return [
-            fine for fine in self._fines.values()
-            if fine.member_id == member_id and not fine.is_fully_paid()
-        ]
+        return [fine for fine in self._fines.values() if fine.member_id == member_id and not fine.is_fully_paid()]
 
-    def get_by_loan(self, loan_id: str) -> Optional[Fine]:
+    def get_by_loan(self, loan_id: str) -> Fine | None:
         """Get the fine associated with a specific loan."""
         for fine in self._fines.values():
             if fine.loan_id == loan_id:

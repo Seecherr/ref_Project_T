@@ -2,7 +2,6 @@
 
 import pytest
 
-from src.models.book import Book, BookItem, BookStatus
 from src.utils.exceptions import BookNotFoundError, DuplicateError, InvalidISBNError
 
 
@@ -29,11 +28,11 @@ class TestCatalogService:
             catalog_service.add_book("9780134685991", "Book 2", "Author 2")
 
     def test_add_book_empty_title(self, catalog_service):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             catalog_service.add_book("9780134685991", "", "Author")
 
     def test_add_book_empty_author(self, catalog_service):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             catalog_service.add_book("9780134685991", "Title", "")
 
     def test_add_book_item(self, catalog_service):
@@ -104,7 +103,9 @@ class TestCatalogService:
 
     def test_update_book_all_fields(self, catalog_service):
         catalog_service.add_book("9780134685991", "Old", "Old")
-        book = catalog_service.update_book("9780134685991", title="New", author="New Author", subject="New Subject", year=2025)
+        book = catalog_service.update_book(
+            "9780134685991", title="New", author="New Author", subject="New Subject", year=2025
+        )
         assert book.title == "New"
         assert book.author == "New Author"
         assert book.subject == "New Subject"

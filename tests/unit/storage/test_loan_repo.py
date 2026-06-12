@@ -1,10 +1,6 @@
 """Unit tests for InMemoryLoanRepository."""
 
-import pytest
-from datetime import date, timedelta
-
 from src.models.loan import Loan
-from src.storage.in_memory_loan_repository import InMemoryLoanRepository
 
 
 class TestInMemoryLoanRepository:

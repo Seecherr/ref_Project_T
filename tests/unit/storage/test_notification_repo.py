@@ -1,10 +1,8 @@
 """Unit tests for InMemoryNotificationRepository."""
 
-import pytest
 from datetime import datetime, timedelta
 
 from src.models.notification import Notification
-from src.storage.in_memory_notification_repository import InMemoryNotificationRepository
 
 
 class TestInMemoryNotificationRepository:

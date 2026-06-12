@@ -80,9 +80,7 @@ class EventManager:
             listener: The listener to remove.
         """
         if event in self._listeners:
-            self._listeners[event] = [
-                l for l in self._listeners[event] if l is not listener
-            ]
+            self._listeners[event] = [existing for existing in self._listeners[event] if existing is not listener]
 
     def notify(self, event: Event, data: dict[str, Any] | None = None) -> None:
         """Publish an event to all subscribed listeners.

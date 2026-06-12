@@ -36,6 +36,7 @@ jobs:
         run: bandit -r src/ app.py main.py -c pyproject.toml -f txt || true
 
   build-and-test:
+    needs: lint-and-static-analysis
     runs-on: self-hosted
     
     steps:
@@ -85,3 +86,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true

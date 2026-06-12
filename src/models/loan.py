@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, timedelta
-from typing import Optional
 
 # Default loan period in days.
 DEFAULT_LOAN_PERIOD_DAYS = 14
@@ -23,7 +22,7 @@ class Loan:
     book_item_barcode: str
     issue_date: date = field(default_factory=date.today)
     due_date: date = field(default=None)
-    return_date: Optional[date] = None
+    return_date: date | None = None
 
     def __post_init__(self) -> None:
         """Set default due date if not provided."""
@@ -34,7 +33,7 @@ class Loan:
         """Check if this loan is currently active (not returned)."""
         return self.return_date is None
 
-    def is_overdue(self, as_of: Optional[date] = None) -> bool:
+    def is_overdue(self, as_of: date | None = None) -> bool:
         """Check if this loan is overdue.
 
         Args:
@@ -48,7 +47,7 @@ class Loan:
             return self.return_date > self.due_date
         return check_date > self.due_date
 
-    def days_overdue(self, as_of: Optional[date] = None) -> int:
+    def days_overdue(self, as_of: date | None = None) -> int:
         """Calculate the number of days overdue.
 
         Args:
@@ -63,7 +62,7 @@ class Loan:
         delta = (check_date - self.due_date).days
         return max(0, delta)
 
-    def complete_return(self, return_on: Optional[date] = None) -> None:
+    def complete_return(self, return_on: date | None = None) -> None:
         """Mark this loan as returned.
 
         Args:

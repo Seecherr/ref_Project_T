@@ -6,17 +6,14 @@ priority queue semantics (FIFO by creation date).
 
 from __future__ import annotations
 
-from typing import Optional
-
-from src.models.reservation import Reservation, ReservationStatus
+from src.models.reservation import Reservation
 from src.storage.interfaces import (
-    ReservationRepository,
     BookItemRepository,
     MemberRepository,
+    ReservationRepository,
 )
 from src.utils.event_manager import Event, EventManager
 from src.utils.exceptions import (
-    BookNotFoundError,
     MemberBlockedError,
     MemberNotFoundError,
     ReservationError,
@@ -36,7 +33,7 @@ class ReservationService:
         reservation_repo: ReservationRepository,
         book_item_repo: BookItemRepository,
         member_repo: MemberRepository,
-        event_manager: Optional[EventManager] = None,
+        event_manager: EventManager | None = None,
         max_reservations_per_member: int = 5,
     ) -> None:
         """Initialize with dependencies.
@@ -83,21 +80,15 @@ class ReservationService:
 
         # Check for existing waiting reservation for same book
         member_reservations = self._reservation_repo.get_by_member(member_id)
-        waiting_for_book = [
-            r for r in member_reservations
-            if r.book_isbn == book_isbn and r.is_waiting()
-        ]
+        waiting_for_book = [r for r in member_reservations if r.book_isbn == book_isbn and r.is_waiting()]
         if waiting_for_book:
-            raise ReservationError(
-                f"Member {member_id} already has a waiting reservation for book {book_isbn}"
-            )
+            raise ReservationError(f"Member {member_id} already has a waiting reservation for book {book_isbn}")
 
         # Check max reservations limit
         active_count = sum(1 for r in member_reservations if r.is_waiting())
         if active_count >= self._max_reservations:
             raise ReservationError(
-                f"Member {member_id} has reached the maximum of "
-                f"{self._max_reservations} active reservations"
+                f"Member {member_id} has reached the maximum of {self._max_reservations} active reservations"
             )
 
         reservation = Reservation(
@@ -124,15 +115,13 @@ class ReservationService:
         if not reservation:
             raise ReservationError(f"Reservation not found: {reservation_id}")
         if not reservation.is_waiting():
-            raise ReservationError(
-                f"Cannot cancel reservation {reservation_id}: status is {reservation.status.value}"
-            )
+            raise ReservationError(f"Cannot cancel reservation {reservation_id}: status is {reservation.status.value}")
 
         reservation.cancel()
         self._reservation_repo.update(reservation)
         return reservation
 
-    def fulfill_next_reservation(self, book_isbn: str) -> Optional[Reservation]:
+    def fulfill_next_reservation(self, book_isbn: str) -> Reservation | None:
         """Fulfill the next waiting reservation for a book (FIFO).
 
         This is typically called when a book is returned and becomes available.

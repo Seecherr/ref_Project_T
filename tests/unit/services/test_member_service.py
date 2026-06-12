@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.models.member import Reader, Librarian, MemberStatus
-from src.utils.exceptions import MemberNotFoundError, DuplicateError
+from src.models.member import Librarian, MemberStatus, Reader
+from src.utils.exceptions import DuplicateError, MemberNotFoundError
 
 
 class TestMemberService:
@@ -28,7 +28,7 @@ class TestMemberService:
             member_service.register_reader("John", "invalid")
 
     def test_register_reader_empty_name(self, member_service):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             member_service.register_reader("", "john@test.com")
 
     def test_register_reader_duplicate_email(self, member_service):
@@ -42,7 +42,7 @@ class TestMemberService:
         assert lib.employee_id == "EMP001"
 
     def test_register_librarian_invalid_email(self, member_service):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="email"):
             member_service.register_librarian("Jane", "invalid")
 
     def test_register_librarian_duplicate_email(self, member_service):
@@ -124,7 +124,7 @@ class TestMemberService:
 
     def test_update_member_invalid_email(self, member_service):
         member_service.register_reader("John", "john@test.com", member_id="R001")
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="email"):
             member_service.update_member("R001", email="invalid")
 
     def test_register_librarian_with_id(self, member_service):

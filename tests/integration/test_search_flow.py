@@ -1,10 +1,7 @@
 """Integration tests for catalog search flow."""
 
-import pytest
-
-from src.models.book import Book, BookItem, BookStatus
 from src.services.catalog_service import CatalogService
-from src.storage.in_memory_book_repository import InMemoryBookRepository, InMemoryBookItemRepository
+from src.storage.in_memory_book_repository import InMemoryBookItemRepository, InMemoryBookRepository
 
 
 class TestSearchFlow:

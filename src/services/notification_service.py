@@ -6,11 +6,11 @@ notifications for members. Integrates with the Observer pattern.
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from src.models.notification import Notification
 from src.storage.interfaces import NotificationRepository
-from src.utils.event_manager import Event, EventListener, EventManager
+from src.utils.event_manager import Event, EventListener
 from src.utils.id_generator import generate_id
 
 
@@ -53,7 +53,7 @@ class NotificationService:
         self._notification_repo.add(notification)
         return notification
 
-    def mark_as_read(self, notification_id: str) -> Optional[Notification]:
+    def mark_as_read(self, notification_id: str) -> Notification | None:
         """Mark a notification as read.
 
         Args:
@@ -69,7 +69,7 @@ class NotificationService:
         self._notification_repo.update(notification)
         return notification
 
-    def mark_as_unread(self, notification_id: str) -> Optional[Notification]:
+    def mark_as_unread(self, notification_id: str) -> Notification | None:
         """Mark a notification as unread.
 
         Args:
@@ -107,7 +107,7 @@ class NotificationService:
         """
         return self._notification_repo.get_unread_by_member(member_id)
 
-    def get_notification(self, notification_id: str) -> Optional[Notification]:
+    def get_notification(self, notification_id: str) -> Notification | None:
         """Get a notification by ID.
 
         Args:
@@ -138,7 +138,7 @@ class BookAvailabilityListener(EventListener):
     def __init__(
         self,
         notification_service: NotificationService,
-        reservation_repo: Optional[Any] = None,
+        reservation_repo: Any | None = None,
     ) -> None:
         """Initialize with dependencies.
 

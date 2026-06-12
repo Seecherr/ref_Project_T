@@ -5,7 +5,6 @@ from __future__ import annotations
 import enum
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Optional
 
 
 class BookStatus(enum.Enum):
@@ -28,7 +27,7 @@ class BookItem:
     book_isbn: str
     status: BookStatus = BookStatus.AVAILABLE
     rack_number: str = ""
-    due_date: Optional[date] = None
+    due_date: date | None = None
 
     def is_available(self) -> bool:
         """Check if this book item is available for borrowing."""
@@ -73,7 +72,7 @@ class Book:
         """Add a physical copy to this book."""
         self.items.append(item)
 
-    def remove_item(self, barcode: str) -> Optional[BookItem]:
+    def remove_item(self, barcode: str) -> BookItem | None:
         """Remove a physical copy by barcode. Returns the removed item or None."""
         for i, item in enumerate(self.items):
             if item.barcode == barcode:

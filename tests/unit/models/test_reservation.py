@@ -1,6 +1,5 @@
 """Unit tests for Reservation model."""
 
-import pytest
 from datetime import datetime
 
 from src.models.reservation import Reservation, ReservationStatus

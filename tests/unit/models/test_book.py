@@ -1,6 +1,5 @@
 """Unit tests for Book and BookItem models."""
 
-import pytest
 from datetime import date
 
 from src.models.book import Book, BookItem, BookStatus

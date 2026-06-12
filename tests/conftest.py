@@ -1,33 +1,29 @@
 """Root conftest for pytest — shared fixtures."""
 
-import pytest
+from datetime import date, timedelta
 from decimal import Decimal
-from datetime import date, datetime, timedelta
 
-from src.models.book import Book, BookItem, BookStatus
-from src.models.member import Reader, Librarian, MemberStatus
-from src.models.loan import Loan
+import pytest
+
+from src.models.book import Book, BookItem
 from src.models.fine import Fine
-from src.models.reservation import Reservation, ReservationStatus
+from src.models.loan import Loan
+from src.models.member import Librarian, Reader
 from src.models.notification import Notification
-
-from src.storage.in_memory_book_repository import InMemoryBookRepository, InMemoryBookItemRepository
-from src.storage.in_memory_member_repository import InMemoryMemberRepository
-from src.storage.in_memory_loan_repository import InMemoryLoanRepository
-from src.storage.in_memory_fine_repository import InMemoryFineRepository
-from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
-from src.storage.in_memory_notification_repository import InMemoryNotificationRepository
-
-from src.utils.event_manager import EventManager
-from src.utils.fine_strategy import StandardFineStrategy, ProgressiveFineStrategy, NoFineStrategy
-
+from src.models.reservation import Reservation
 from src.services.catalog_service import CatalogService
-from src.services.member_service import MemberService
-from src.services.loan_service import LoanService
 from src.services.fine_service import FineService
-from src.services.reservation_service import ReservationService
+from src.services.loan_service import LoanService
+from src.services.member_service import MemberService
 from src.services.notification_service import NotificationService
-
+from src.services.reservation_service import ReservationService
+from src.storage.in_memory_book_repository import InMemoryBookItemRepository, InMemoryBookRepository
+from src.storage.in_memory_fine_repository import InMemoryFineRepository
+from src.storage.in_memory_loan_repository import InMemoryLoanRepository
+from src.storage.in_memory_member_repository import InMemoryMemberRepository
+from src.storage.in_memory_notification_repository import InMemoryNotificationRepository
+from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
+from src.utils.event_manager import EventManager
 
 # ── Model Fixtures ──────────────────────────────────────────────────
 

@@ -1,9 +1,8 @@
 """Unit tests for Member, Reader, and Librarian models."""
 
-import pytest
 from datetime import datetime
 
-from src.models.member import Member, Reader, Librarian, MemberStatus
+from src.models.member import Librarian, Member, MemberStatus, Reader
 
 
 class TestMemberStatus:

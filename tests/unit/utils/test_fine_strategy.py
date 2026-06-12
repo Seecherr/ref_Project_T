@@ -1,13 +1,12 @@
 """Unit tests for fine calculation strategies (Strategy Pattern)."""
 
-import pytest
 from decimal import Decimal
 
 from src.utils.fine_strategy import (
-    StandardFineStrategy,
-    ProgressiveFineStrategy,
-    NoFineStrategy,
     FineCalculationStrategy,
+    NoFineStrategy,
+    ProgressiveFineStrategy,
+    StandardFineStrategy,
 )
 
 
@@ -63,37 +62,37 @@ class TestProgressiveFineStrategy:
 
     def test_seven_days_first_tier(self):
         strategy = ProgressiveFineStrategy()
-        # 7 days × $0.50 = $3.50
+        # 7 days x $0.50 = $3.50
         assert strategy.calculate(7) == Decimal("3.50")
 
     def test_eight_days_crosses_tier(self):
         strategy = ProgressiveFineStrategy()
-        # 7 × $0.50 + 1 × $1.00 = $4.50
+        # 7 x $0.50 + 1 x $1.00 = $4.50
         assert strategy.calculate(8) == Decimal("4.50")
 
     def test_fourteen_days(self):
         strategy = ProgressiveFineStrategy()
-        # 7 × $0.50 + 7 × $1.00 = $3.50 + $7.00 = $10.50
+        # 7 x $0.50 + 7 x $1.00 = $3.50 + $7.00 = $10.50
         assert strategy.calculate(14) == Decimal("10.50")
 
     def test_fifteen_days_crosses_third_tier(self):
         strategy = ProgressiveFineStrategy()
-        # 7 × $0.50 + 7 × $1.00 + 1 × $2.00 = $12.50
+        # 7 x $0.50 + 7 x $1.00 + 1 x $2.00 = $12.50
         assert strategy.calculate(15) == Decimal("12.50")
 
     def test_thirty_days(self):
         strategy = ProgressiveFineStrategy()
-        # 7 × $0.50 + 7 × $1.00 + 16 × $2.00 = $3.50 + $7.00 + $32.00 = $42.50
+        # 7 x $0.50 + 7 x $1.00 + 16 x $2.00 = $3.50 + $7.00 + $32.00 = $42.50
         assert strategy.calculate(30) == Decimal("42.50")
 
     def test_thirty_one_days_fourth_tier(self):
         strategy = ProgressiveFineStrategy()
-        # 7 × $0.50 + 7 × $1.00 + 16 × $2.00 + 1 × $4.00 = $46.50
+        # 7 x $0.50 + 7 x $1.00 + 16 x $2.00 + 1 x $4.00 = $46.50
         assert strategy.calculate(31) == Decimal("46.50")
 
     def test_custom_base_rate(self):
         strategy = ProgressiveFineStrategy(base_rate=Decimal("1.00"))
-        # 7 × $1.00 = $7.00 for 7 days
+        # 7 x $1.00 = $7.00 for 7 days
         assert strategy.calculate(7) == Decimal("7.00")
 
     def test_is_strategy(self):

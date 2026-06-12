@@ -1,17 +1,18 @@
 """Unit tests for validators."""
 
-import pytest
 from datetime import date
 
+import pytest
+
+from src.utils.exceptions import InvalidISBNError
 from src.utils.validators import (
-    validate_isbn,
-    validate_email,
+    validate_barcode,
     validate_date_range,
+    validate_email,
+    validate_isbn,
     validate_non_empty_string,
     validate_positive_number,
-    validate_barcode,
 )
-from src.utils.exceptions import InvalidISBNError
 
 
 class TestValidateISBN:
@@ -87,11 +88,11 @@ class TestValidateNonEmptyString:
         assert validate_non_empty_string("hello") is True
 
     def test_empty(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             validate_non_empty_string("")
 
     def test_whitespace_only(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             validate_non_empty_string("   ")
 
     def test_custom_field_name(self):
@@ -106,11 +107,11 @@ class TestValidatePositiveNumber:
         assert validate_positive_number(5.0) is True
 
     def test_zero(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="must be positive"):
             validate_positive_number(0)
 
     def test_negative(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="must be positive"):
             validate_positive_number(-1.0)
 
 
@@ -121,9 +122,9 @@ class TestValidateBarcode:
         assert validate_barcode("BC001") is True
 
     def test_empty(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             validate_barcode("")
 
     def test_whitespace(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="cannot be empty"):
             validate_barcode("   ")

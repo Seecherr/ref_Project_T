@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from src.models.book import Book, BookItem, BookStatus
-from src.storage.interfaces import BookRepository, BookItemRepository
+from src.storage.interfaces import BookItemRepository, BookRepository
 
 
 class InMemoryBookRepository(BookRepository):
@@ -21,7 +19,7 @@ class InMemoryBookRepository(BookRepository):
         """Add a book. Raises if ISBN already exists."""
         self._books[book.isbn] = book
 
-    def get_by_isbn(self, isbn: str) -> Optional[Book]:
+    def get_by_isbn(self, isbn: str) -> Book | None:
         """Get a book by ISBN."""
         return self._books.get(isbn)
 
@@ -33,7 +31,8 @@ class InMemoryBookRepository(BookRepository):
         """Search books by title, author, ISBN, or subject (case-insensitive)."""
         q = query.lower()
         return [
-            book for book in self._books.values()
+            book
+            for book in self._books.values()
             if q in book.title.lower()
             or q in book.author.lower()
             or q in book.isbn.lower()
@@ -66,7 +65,7 @@ class InMemoryBookItemRepository(BookItemRepository):
         """Add a book item."""
         self._items[item.barcode] = item
 
-    def get_by_barcode(self, barcode: str) -> Optional[BookItem]:
+    def get_by_barcode(self, barcode: str) -> BookItem | None:
         """Get a book item by barcode."""
         return self._items.get(barcode)
 
@@ -76,10 +75,7 @@ class InMemoryBookItemRepository(BookItemRepository):
 
     def get_available_by_isbn(self, isbn: str) -> list[BookItem]:
         """Get available book items for a given ISBN."""
-        return [
-            item for item in self._items.values()
-            if item.book_isbn == isbn and item.status == BookStatus.AVAILABLE
-        ]
+        return [item for item in self._items.values() if item.book_isbn == isbn and item.status == BookStatus.AVAILABLE]
 
     def update(self, item: BookItem) -> None:
         """Update a book item."""

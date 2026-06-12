@@ -1,8 +1,9 @@
 """Unit tests for Fine model."""
 
-import pytest
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
+
+import pytest
 
 from src.models.fine import Fine
 

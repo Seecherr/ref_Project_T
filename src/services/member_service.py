@@ -5,14 +5,11 @@ Handles member registration, updates, blocking/unblocking, and lookups.
 
 from __future__ import annotations
 
-from typing import Optional
-
-from src.models.member import Member, Reader, Librarian, MemberStatus
+from src.models.member import Librarian, Member, Reader
 from src.storage.interfaces import MemberRepository
 from src.utils.exceptions import (
-    MemberNotFoundError,
-    MemberBlockedError,
     DuplicateError,
+    MemberNotFoundError,
 )
 from src.utils.id_generator import generate_id
 from src.utils.validators import validate_email, validate_non_empty_string
@@ -37,7 +34,7 @@ class MemberService:
         self,
         name: str,
         email: str,
-        member_id: Optional[str] = None,
+        member_id: str | None = None,
         max_books_limit: int = 5,
     ) -> Reader:
         """Register a new reader.
@@ -79,7 +76,7 @@ class MemberService:
         name: str,
         email: str,
         employee_id: str = "",
-        member_id: Optional[str] = None,
+        member_id: str | None = None,
     ) -> Librarian:
         """Register a new librarian.
 
@@ -160,8 +157,8 @@ class MemberService:
     def update_member(
         self,
         member_id: str,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
+        name: str | None = None,
+        email: str | None = None,
     ) -> Member:
         """Update a member's information.
 

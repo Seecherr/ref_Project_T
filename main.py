@@ -4,25 +4,20 @@ Demonstrates the library management system with sample data
 and provides a simple interactive CLI.
 """
 
-from datetime import date, timedelta
-from decimal import Decimal
-
-from src.models.book import Book, BookItem
-from src.models.member import Reader, Librarian
 from src.services.catalog_service import CatalogService
-from src.services.member_service import MemberService
-from src.services.loan_service import LoanService
 from src.services.fine_service import FineService
+from src.services.loan_service import LoanService
+from src.services.member_service import MemberService
+from src.services.notification_service import BookAvailabilityListener, NotificationService
 from src.services.reservation_service import ReservationService
-from src.services.notification_service import NotificationService, BookAvailabilityListener
-from src.storage.in_memory_book_repository import InMemoryBookRepository, InMemoryBookItemRepository
-from src.storage.in_memory_member_repository import InMemoryMemberRepository
-from src.storage.in_memory_loan_repository import InMemoryLoanRepository
+from src.storage.in_memory_book_repository import InMemoryBookItemRepository, InMemoryBookRepository
 from src.storage.in_memory_fine_repository import InMemoryFineRepository
-from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
+from src.storage.in_memory_loan_repository import InMemoryLoanRepository
+from src.storage.in_memory_member_repository import InMemoryMemberRepository
 from src.storage.in_memory_notification_repository import InMemoryNotificationRepository
+from src.storage.in_memory_reservation_repository import InMemoryReservationRepository
 from src.utils.event_manager import Event, EventManager
-from src.utils.fine_strategy import StandardFineStrategy, ProgressiveFineStrategy
+from src.utils.fine_strategy import ProgressiveFineStrategy, StandardFineStrategy
 
 
 def create_application():
@@ -138,7 +133,7 @@ def demo_workflow(services: dict) -> None:
     # Check notifications (Observer pattern in action)
     bob_notifications = notifications.get_unread_notifications("R002")
     if bob_notifications:
-        print(f"   🔔 Bob received notification: \"{bob_notifications[0].message[:60]}...\"")
+        print(f'   🔔 Bob received notification: "{bob_notifications[0].message[:60]}..."')
 
     # 5. Fine calculation (Strategy pattern)
     print("\n💰 Fine calculation demo (Strategy pattern)...")
@@ -182,7 +177,7 @@ def interactive_menu(services: dict) -> None:
         if choice == "0":
             print("👋 Goodbye!")
             break
-        elif choice == "1":
+        if choice == "1":
             query = input("Search query: ").strip()
             results = services["catalog"].search_books(query)
             if not results:
@@ -218,11 +213,13 @@ def interactive_menu(services: dict) -> None:
             except Exception as e:
                 print(f"   ❌ Error: {e}")
         elif choice == "6":
-            all_loans = [l for l in services["loans"].get_all_loans() if l.is_active()]
+            all_loans = [active_loan for active_loan in services["loans"].get_all_loans() if active_loan.is_active()]
             if not all_loans:
                 print("   No active loans.")
-            for l in all_loans:
-                print(f"   📋 {l.book_item_barcode} → Member {l.member_id} (due: {l.due_date})")
+            for active_loan in all_loans:
+                print(
+                    f"   📋 {active_loan.book_item_barcode} → Member {active_loan.member_id} (due: {active_loan.due_date})"
+                )
         elif choice == "7":
             mid = input("Member ID: ").strip()
             notifs = services["notifications"].get_notifications(mid)

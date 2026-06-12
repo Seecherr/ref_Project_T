@@ -7,13 +7,12 @@ and auto-blocking of members with excessive unpaid fines.
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import Optional
 
 from src.models.fine import Fine
 from src.models.loan import Loan
 from src.storage.interfaces import FineRepository, MemberRepository
 from src.utils.event_manager import Event, EventManager
-from src.utils.exceptions import FineNotFoundError, MemberNotFoundError
+from src.utils.exceptions import FineNotFoundError
 from src.utils.fine_strategy import FineCalculationStrategy, StandardFineStrategy
 from src.utils.id_generator import generate_id
 
@@ -32,8 +31,8 @@ class FineService:
         self,
         fine_repo: FineRepository,
         member_repo: MemberRepository,
-        fine_strategy: Optional[FineCalculationStrategy] = None,
-        event_manager: Optional[EventManager] = None,
+        fine_strategy: FineCalculationStrategy | None = None,
+        event_manager: EventManager | None = None,
         block_threshold: Decimal = DEFAULT_BLOCK_THRESHOLD,
     ) -> None:
         """Initialize with dependencies.
@@ -71,7 +70,7 @@ class FineService:
         days = loan.days_overdue()
         return self._strategy.calculate(days)
 
-    def create_fine(self, loan: Loan) -> Optional[Fine]:
+    def create_fine(self, loan: Loan) -> Fine | None:
         """Create a fine for an overdue loan if applicable.
 
         Args:

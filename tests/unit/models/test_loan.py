@@ -1,9 +1,8 @@
 """Unit tests for Loan model."""
 
-import pytest
 from datetime import date, timedelta
 
-from src.models.loan import Loan, DEFAULT_LOAN_PERIOD_DAYS
+from src.models.loan import DEFAULT_LOAN_PERIOD_DAYS, Loan
 
 
 class TestLoan:
@@ -37,14 +36,18 @@ class TestLoan:
 
     def test_is_overdue_on_due_date(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             due_date=date.today(),
         )
         assert loan.is_overdue() is False
 
     def test_is_overdue_returned_late(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             issue_date=date(2025, 1, 1),
             due_date=date(2025, 1, 15),
             return_date=date(2025, 1, 20),
@@ -53,7 +56,9 @@ class TestLoan:
 
     def test_is_overdue_returned_on_time(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             issue_date=date(2025, 1, 1),
             due_date=date(2025, 1, 15),
             return_date=date(2025, 1, 14),
@@ -68,7 +73,9 @@ class TestLoan:
 
     def test_days_overdue_specific_date(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             issue_date=date(2025, 1, 1),
             due_date=date(2025, 1, 15),
         )
@@ -76,7 +83,9 @@ class TestLoan:
 
     def test_days_overdue_returned_late(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             issue_date=date(2025, 1, 1),
             due_date=date(2025, 1, 15),
             return_date=date(2025, 1, 25),
@@ -98,7 +107,9 @@ class TestLoan:
 
     def test_is_overdue_with_as_of(self):
         loan = Loan(
-            loan_id="L1", member_id="M1", book_item_barcode="B1",
+            loan_id="L1",
+            member_id="M1",
+            book_item_barcode="B1",
             issue_date=date(2025, 1, 1),
             due_date=date(2025, 1, 15),
         )
