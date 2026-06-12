@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Stop existing container
+        run: |
+          docker stop library-app 2>$null
+          docker rm library-app 2>$null
+        continue-on-error: true
+
+      - name: Build Docker image
+        run: docker build -t library-management-system:latest .
+
+      - name: Run application container
+        run: |
+          docker run -d `
+            --name library-app `
+            --restart unless-stopped `
+            -p 8000:8000 `
+            library-management-system:latest
+
+      - name: Verify deployment
+        run: |
+          Start-Sleep -Seconds 5
+          try {
+            $response = Invoke-RestMethod -Uri "http://localhost:8000/api/health" -Method Get
+            if ($response.status -eq 'ok') {
+              Write-Host "✅ Deployment successful — API is responding"
+              Write-Host "   Health check: $($response | ConvertTo-Json)"
+            } else {
+              Write-Host "❌ Deployment failed — unexpected health response"
+              docker logs library-app
+              exit 1
+            }
+          } catch {
+            Write-Host "❌ Deployment failed — API not responding"
+            docker logs library-app
+            exit 1
+          }

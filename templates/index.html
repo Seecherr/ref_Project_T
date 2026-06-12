@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Library Management System — Manage books, members, loans, reservations, and fines.">
+    <title>Library Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <div>
+                    <h1>Library Management System</h1>
+                    <p class="subtitle">v1.0.0 — Strategy + Observer Patterns</p>
+                </div>
+            </div>
+            <div class="header-status" id="headerStatus">
+                <span class="status-dot"></span>
+                <span>API Connected</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-nav">
+        <div class="tab-nav-inner">
+            <button class="tab-btn active" data-tab="books">
+                <span class="tab-icon">📖</span> Books
+            </button>
+            <button class="tab-btn" data-tab="members">
+                <span class="tab-icon">👥</span> Members
+            </button>
+            <button class="tab-btn" data-tab="loans">
+                <span class="tab-icon">📋</span> Loans
+            </button>
+            <button class="tab-btn" data-tab="reservations">
+                <span class="tab-icon">🔖</span> Reservations
+            </button>
+            <button class="tab-btn" data-tab="fines">
+                <span class="tab-icon">💰</span> Fines
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- ==================== BOOKS TAB ==================== -->
+        <section class="tab-panel active" id="tab-books">
+            <div class="panel-header">
+                <h2>Book Catalog</h2>
+                <div class="panel-actions">
+                    <div class="search-box">
+                        <input type="text" id="bookSearch" placeholder="Search by title, author, or subject..." autocomplete="off">
+                        <button class="btn btn-ghost" onclick="searchBooks()">Search</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="showModal('addBookModal')">+ Add Book</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="booksTable">
+                    <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Subject</th>
+                            <th>Year</th>
+                            <th>Available</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksBody"></tbody>
+                </table>
+                <div class="empty-state" id="booksEmpty" style="display:none;">
+                    <span class="empty-icon">📚</span>
+                    <p>No books found</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MEMBERS TAB ==================== -->
+        <section class="tab-panel" id="tab-members">
+            <div class="panel-header">
+                <h2>Members</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-primary" onclick="showModal('addMemberModal')">+ Register Member</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="membersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Books Out</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersBody"></tbody>
+                </table>
+                <div class="empty-state" id="membersEmpty" style="display:none;">
+                    <span class="empty-icon">👥</span>
+                    <p>No members registered</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== LOANS TAB ==================== -->
+        <section class="tab-panel" id="tab-loans">
+            <div class="panel-header">
+                <h2>Loans</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-primary" onclick="showModal('borrowModal')">+ Borrow Book</button>
+                    <button class="btn btn-secondary" onclick="showModal('returnModal')">↩ Return Book</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="loansTable">
+                    <thead>
+                        <tr>
+                            <th>Loan ID</th>
+                            <th>Member</th>
+                            <th>Barcode</th>
+                            <th>Issued</th>
+                            <th>Due</th>
+                            <th>Returned</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansBody"></tbody>
+                </table>
+                <div class="empty-state" id="loansEmpty" style="display:none;">
+                    <span class="empty-icon">📋</span>
+                    <p>No loans recorded</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RESERVATIONS TAB ==================== -->
+        <section class="tab-panel" id="tab-reservations">
+            <div class="panel-header">
+                <h2>Reservations</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-primary" onclick="showModal('reserveModal')">+ Place Reservation</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="reservationsTable">
+                    <thead>
+                        <tr>
+                            <th>Reservation ID</th>
+                            <th>Member</th>
+                            <th>Book ISBN</th>
+                            <th>Created</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBody"></tbody>
+                </table>
+                <div class="empty-state" id="reservationsEmpty" style="display:none;">
+                    <span class="empty-icon">🔖</span>
+                    <p>No reservations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FINES TAB ==================== -->
+        <section class="tab-panel" id="tab-fines">
+            <div class="panel-header">
+                <h2>Fines</h2>
+                <div class="panel-actions">
+                    <div class="search-box">
+                        <input type="text" id="fineMemberSearch" placeholder="Enter Member ID..." autocomplete="off">
+                        <button class="btn btn-ghost" onclick="lookupFines()">Lookup</button>
+                    </div>
+                </div>
+            </div>
+            <div id="finesSummary" class="fines-summary" style="display:none;">
+                <div class="fine-stat">
+                    <span class="fine-stat-label">Member</span>
+                    <span class="fine-stat-value" id="finesMemberId">—</span>
+                </div>
+                <div class="fine-stat">
+                    <span class="fine-stat-label">Total Unpaid</span>
+                    <span class="fine-stat-value fine-amount" id="finesTotalUnpaid">$0.00</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="finesTable">
+                    <thead>
+                        <tr>
+                            <th>Fine ID</th>
+                            <th>Loan ID</th>
+                            <th>Amount</th>
+                            <th>Paid</th>
+                            <th>Outstanding</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="finesBody"></tbody>
+                </table>
+                <div class="empty-state" id="finesEmpty">
+                    <span class="empty-icon">💰</span>
+                    <p>Enter a Member ID above to view fines</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Add Book Modal -->
+    <div class="modal-overlay" id="addBookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Book</h3>
+                <button class="modal-close" onclick="hideModal('addBookModal')">&times;</button>
+            </div>
+            <form onsubmit="addBook(event)">
+                <div class="form-group">
+                    <label for="bookIsbn">ISBN</label>
+                    <input type="text" id="bookIsbn" placeholder="e.g. 9780134685991" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookTitle">Title</label>
+                    <input type="text" id="bookTitle" placeholder="Book title" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookAuthor">Author</label>
+                    <input type="text" id="bookAuthor" placeholder="Author name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookSubject">Subject</label>
+                        <input type="text" id="bookSubject" placeholder="e.g. Programming">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookYear">Year</label>
+                        <input type="number" id="bookYear" placeholder="2024" min="1000" max="9999">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('addBookModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div class="modal-overlay" id="addMemberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Register Member</h3>
+                <button class="modal-close" onclick="hideModal('addMemberModal')">&times;</button>
+            </div>
+            <form onsubmit="addMember(event)">
+                <div class="form-group">
+                    <label for="memberName">Full Name</label>
+                    <input type="text" id="memberName" placeholder="Full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="memberEmail">Email</label>
+                    <input type="email" id="memberEmail" placeholder="email@example.com" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="memberType">Type</label>
+                        <select id="memberType">
+                            <option value="reader">Reader</option>
+                            <option value="librarian">Librarian</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberId">Member ID (optional)</label>
+                        <input type="text" id="memberId" placeholder="Auto-generated">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('addMemberModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Borrow Book Modal -->
+    <div class="modal-overlay" id="borrowModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Borrow Book</h3>
+                <button class="modal-close" onclick="hideModal('borrowModal')">&times;</button>
+            </div>
+            <form onsubmit="borrowBook(event)">
+                <div class="form-group">
+                    <label for="borrowMemberId">Member ID</label>
+                    <input type="text" id="borrowMemberId" placeholder="e.g. R001" required>
+                </div>
+                <div class="form-group">
+                    <label for="borrowBarcode">Book Barcode</label>
+                    <input type="text" id="borrowBarcode" placeholder="e.g. EJ-001" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('borrowModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Borrow</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Return Book Modal -->
+    <div class="modal-overlay" id="returnModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Return Book</h3>
+                <button class="modal-close" onclick="hideModal('returnModal')">&times;</button>
+            </div>
+            <form onsubmit="returnBook(event)">
+                <div class="form-group">
+                    <label for="returnBarcode">Book Barcode</label>
+                    <input type="text" id="returnBarcode" placeholder="e.g. EJ-001" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('returnModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reserve Book Modal -->
+    <div class="modal-overlay" id="reserveModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Place Reservation</h3>
+                <button class="modal-close" onclick="hideModal('reserveModal')">&times;</button>
+            </div>
+            <form onsubmit="placeReservation(event)">
+                <div class="form-group">
+                    <label for="reserveMemberId">Member ID</label>
+                    <input type="text" id="reserveMemberId" placeholder="e.g. R001" required>
+                </div>
+                <div class="form-group">
+                    <label for="reserveIsbn">Book ISBN</label>
+                    <input type="text" id="reserveIsbn" placeholder="e.g. 9780134685991" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('reserveModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Reserve</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pay Fine Modal -->
+    <div class="modal-overlay" id="payFineModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Pay Fine</h3>
+                <button class="modal-close" onclick="hideModal('payFineModal')">&times;</button>
+            </div>
+            <form onsubmit="payFine(event)">
+                <div class="form-group">
+                    <label>Fine ID</label>
+                    <input type="text" id="payFineId" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="payAmount">Payment Amount ($)</label>
+                    <input type="number" id="payAmount" step="0.01" min="0.01" placeholder="0.00" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="hideModal('payFineModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Pay</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
