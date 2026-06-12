@@ -21,7 +21,7 @@ class Loan:
     member_id: str
     book_item_barcode: str
     issue_date: date = field(default_factory=date.today)
-    due_date: date = field(default=None)
+    due_date: date = field(default=None)  # type: ignore[assignment]
     return_date: date | None = None
 
     def __post_init__(self) -> None:
