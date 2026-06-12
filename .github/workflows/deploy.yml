@@ -36,15 +36,15 @@ jobs:
           try {
             $response = Invoke-RestMethod -Uri "http://localhost:8000/api/health" -Method Get
             if ($response.status -eq 'ok') {
-              Write-Host "✅ Deployment successful — API is responding"
+              Write-Host "SUCCESS: Deployment successful - API is responding"
               Write-Host "   Health check: $($response | ConvertTo-Json)"
             } else {
-              Write-Host "❌ Deployment failed — unexpected health response"
+              Write-Host "ERROR: Deployment failed - unexpected health response"
               docker logs library-app
               exit 1
             }
           } catch {
-            Write-Host "❌ Deployment failed — API not responding"
+            Write-Host "ERROR: Deployment failed - API not responding"
             docker logs library-app
             exit 1
           }
